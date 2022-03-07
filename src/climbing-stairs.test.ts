@@ -1,4 +1,4 @@
-import climbStairs from "./climbing-stairts";
+import climbStairs from "./climbing-stairs";
 
 test("2 => 2", () => {
   expect(climbStairs(2)).toBe(2);

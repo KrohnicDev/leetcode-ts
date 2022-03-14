@@ -11,40 +11,45 @@ Return true if and only if Alice wins the game, assuming both players play optim
 */
 
 function divisorGame(n: number): boolean {
-  // pre-populated with base cases
-  const memo = [false, false, true, false]
-  const canWin = divisorGameMemoized(memo)
+  const memo = [false]
+  const isWinning = divisorGameMemoized(memo)
 
-  for (let num = 1; num < n; num++) {
-    memo[num] = canWin(num)
-  }
+  range(n).forEach(num => {
+    memo[num] = isWinning(num)
+  })
 
-  return canWin(n)
+  return memo[n]
 }
 
 function divisorGameMemoized(memo: boolean[]) {
-  return function canWin(n: number): boolean {
+  function isWinning(n: number): boolean {
+    return memo[n] ?? calculateWinningChance(n)
+  }
+
+  function isLosing(n: number): boolean {
+    return !isWinning(n)
+  }
+
+  function calculateWinningChance(n: number): boolean {
+    function canBePlayed(x: number) {
+      return isPositive(x) && isFactorOfN(x)
+    }
+
     function isFactorOfN(x: number): boolean {
       return n % x === 0
     }
 
-    function toNextValue(x: number): number {
+    function nextValue(x: number): number {
       return n - x
     }
 
-    function cannotWin(num: number): boolean {
-      return !canWin(num)
-    }
-
-    return (
-      memo[n] ??
-      candidatesForX(n)
-        .filter(isPositive)
-        .filter(isFactorOfN)
-        .map(toNextValue)
-        .some(cannotWin)
-    )
+    return candidatesForX(n)
+      .filter(canBePlayed)
+      .map(nextValue)
+      .some(isLosing)
   }
+
+  return isWinning
 }
 
 function isPositive(x: number) {
@@ -53,8 +58,12 @@ function isPositive(x: number) {
 
 function candidatesForX(n: number) {
   const maxValueForX = Math.floor(n / 2)
-  const range = Array(maxValueForX + 1).keys()
-  return Array.from(range)
+  return range(maxValueForX)
+}
+
+function range(maxValue: number) {
+  const iterator = Array(maxValue + 1).keys()
+  return Array.from(iterator).slice(1)
 }
 
 export { divisorGame }

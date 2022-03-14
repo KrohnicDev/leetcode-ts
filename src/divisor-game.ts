@@ -13,29 +13,48 @@ Return true if and only if Alice wins the game, assuming both players play optim
 function divisorGame(n: number): boolean {
   // pre-populated with base cases
   const memo = [false, false, true, false]
+  const canWin = divisorGameMemoized(memo)
 
-  for (let tmp = 1; tmp < n; tmp++) {
-    memo[tmp] = wins(memo)(tmp)
+  for (let num = 1; num < n; num++) {
+    memo[num] = canWin(num)
   }
 
-  return wins(memo)(n)
+  return canWin(n)
 }
 
-function wins(memo: (boolean | undefined)[]) {
-  return (n: number) => {
-    const toNextValue = (x: number): number => n - x
+function divisorGameMemoized(memo: boolean[]) {
+  return function canWin(n: number): boolean {
+    function isFactorOfN(x: number): boolean {
+      return n % x === 0
+    }
+
+    function toNextValue(x: number): number {
+      return n - x
+    }
+
+    function cannotWin(num: number): boolean {
+      return !canWin(num)
+    }
+
     return (
       memo[n] ??
-      xCandidates(n)
-        .filter(x => x > 0 && n % x === 0)
+      candidatesForX(n)
+        .filter(isPositive)
+        .filter(isFactorOfN)
         .map(toNextValue)
-        .some(wins(memo))
+        .some(cannotWin)
     )
   }
 }
 
-function xCandidates(n: number) {
-  return Array.from(Array(Math.ceil(Math.sqrt(n))).keys())
+function isPositive(x: number) {
+  return x > 0
+}
+
+function candidatesForX(n: number) {
+  const maxValueForX = Math.floor(n / 2)
+  const range = Array(maxValueForX + 1).keys()
+  return Array.from(range)
 }
 
 export { divisorGame }

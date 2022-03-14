@@ -1,15 +1,19 @@
-/*
-Alice and Bob take turns playing a game, with Alice starting first.
-
-Initially, there is a number n on the chalkboard. On each player's turn, that player makes a move consisting of:
-
-Choosing any x with 0 < x < n and n % x == 0.
-Replacing the number n on the chalkboard with n - x.
-Also, if a player cannot make a move, they lose the game.
-
-Return true if and only if Alice wins the game, assuming both players play optimally.
-*/
-
+/**
+ * https://leetcode.com/problems/divisor-game/
+ *
+ * Alice and Bob take turns playing a game, with Alice starting first.
+ *
+ * Initially, there is a number n on the chalkboard. On each player's turn, that player makes a move consisting of:
+ *
+ * Choosing any x with 0 < x < n and n % x == 0.
+ * Replacing the number n on the chalkboard with n - x.
+ * Also, if a player cannot make a move, they lose the game.
+ *
+ * Return true if and only if Alice wins the game, assuming both players play optimally.
+ *
+ * @param n
+ * @returns
+ */
 function divisorGame(n: number): boolean {
   const memo = [false]
   const isWinning = divisorGameMemoized(memo)
@@ -26,10 +30,6 @@ function divisorGameMemoized(memo: boolean[]) {
     return memo[n] ?? calculateWinningChance(n)
   }
 
-  function isLosing(n: number): boolean {
-    return !isWinning(n)
-  }
-
   function calculateWinningChance(n: number): boolean {
     function canBePlayed(x: number) {
       return isPositive(x) && isFactorOfN(x)
@@ -43,7 +43,11 @@ function divisorGameMemoized(memo: boolean[]) {
       return n - x
     }
 
-    return candidatesForX(n)
+    function isLosing(n: number): boolean {
+      return !isWinning(n)
+    }
+
+    return candidatesForPlaying(n)
       .filter(canBePlayed)
       .map(nextValue)
       .some(isLosing)
@@ -56,9 +60,9 @@ function isPositive(x: number) {
   return x > 0
 }
 
-function candidatesForX(n: number) {
-  const maxValueForX = Math.floor(n / 2)
-  return range(maxValueForX)
+function candidatesForPlaying(n: number) {
+  const maxPlayableValue = Math.floor(n / 2)
+  return range(maxPlayableValue)
 }
 
 function range(maxValue: number) {

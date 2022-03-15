@@ -12,7 +12,7 @@
  * Return true if and only if Alice wins the game, assuming both players play optimally.
  */
 function divisorGame(n: number): boolean {
-  const memo = [false]
+  const memo: boolean[] = []
   const isWinning = divisorGameMemoized(memo)
 
   range(n).forEach(num => {

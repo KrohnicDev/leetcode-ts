@@ -5,18 +5,15 @@ Each time you can either climb 1 or 2 steps. In how many distinct ways can you c
 */
 
 function climbStairs(n: number): number {
-  // Base cases pre-populated
-  const results = [0, 1, 2];
+  const ways = [NaN, 1, 2]
 
   for (let i = 3; i <= n; i++) {
-    /*
-    You can get to any step by taking either one or two steps, 
-    so the result is just combining the results of previous two steps together.
-    */
-    results[i] = results[i - 2] + results[i - 1];
+    const back2 = ways[i - 2]
+    const back1 = ways[i - 1]
+    ways[i] = back2 + back1
   }
 
-  return results[n];
+  return ways[n]
 }
 
-export default climbStairs;
+export default climbStairs

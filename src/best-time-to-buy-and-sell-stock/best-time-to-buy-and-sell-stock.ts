@@ -7,23 +7,25 @@ Return the maximum profit you can achieve from this transaction. If you cannot a
 */
 
 function maxProfit(prices: number[]): number {
-  let minPrice = Number.MAX_SAFE_INTEGER;
-  let maxPrice = 0;
-  let maxProfit = 0;
+  let minPrice = Infinity
+  let maxPrice = 0
+  let maxProfit = 0
 
   for (let day = 0; day < prices.length; day++) {
-    const price = prices[day];
+    const price = prices[day]
 
+    // Calculate the potential profit for each day when the price is lowest yet
     if (price < minPrice) {
-      minPrice = price;
-      maxPrice = 0;
+      minPrice = price
+      maxPrice = 0
     } else if (price > maxPrice) {
-      maxPrice = price;
-      maxProfit = Math.max(price - minPrice, maxProfit);
+      const profit = price - minPrice
+      maxPrice = price
+      maxProfit = Math.max(profit, maxProfit)
     }
   }
 
-  return maxProfit;
+  return maxProfit
 }
 
-export default maxProfit;
+export default maxProfit
